@@ -76,7 +76,7 @@ app.get('/cart/:id', (req, res) => {
     });
 });
 
-// delete cart with id
+
 app.delete('/cart/:id', (req, res) => {
     redisClient.del(req.params.id, (err, data) => {
         if(err) {
