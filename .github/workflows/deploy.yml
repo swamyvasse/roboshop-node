@@ -1,0 +1,40 @@
+name: Deploy Node.js App
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run tests
+        run: npm test  # Optional: skip if you don't need to run tests before deployment
+
+      - name: Deploy to Server
+        env:
+          SSH_KEY: ${{ secrets.DEPLOY_KEY }}
+          SERVER_IP: ${{ secrets.SERVER_IP }}
+        run: |
+          echo "$SSH_KEY" > key.pem
+          chmod 600 key.pem
+          ssh -o StrictHostKeyChecking=no -i key.pem your_user@$SERVER_IP << EOF
+            cd /home/ubuntu/myapp
+            git pull origin main
+            npm install
+            npm run build  # Optional: if you have a build step
+            pm2 restart your-app-name  # Assuming you're using PM2 to manage Node.js processes
+          EOF
