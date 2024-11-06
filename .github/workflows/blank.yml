@@ -1,0 +1,39 @@
+name: Deploy to Server
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '20'  # Change as per your Node.js version
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build application
+        run: npm run build  # Modify if you have a build script
+
+      - name: Copy files to server
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Deploy to server
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} "
+            cd ${{ secrets.APP_DIRECTORY }} &&
+            git pull origin main &&
+            npm install --production &&
+            pm2 restart your-app-name  # Use PM2 or your preferred process manager
+          "
