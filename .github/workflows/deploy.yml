@@ -19,7 +19,7 @@ jobs:
           node-version: '20'
 
       - name: Install dependencies
-        working-directory: ./path/to/roboshop-node
+        working-directory: ./roboshop-node
         run: npm install
 
 
