@@ -19,7 +19,7 @@ jobs:
           node-version: '20'
 
       - name: Install dependencies
-        working-directory: /usr/bin/bash
+        working-directory: /home/ubuntu/myapp
         run: npm install
 
 
